@@ -2,6 +2,7 @@ import React from 'react';
 import uuid from 'uuid';
 
 import Notes from './Notes';
+import Button from './Button';
 
 export default class NotesApp extends React.Component {
   constructor(props) {
@@ -11,11 +12,11 @@ export default class NotesApp extends React.Component {
       notes: [
         {
           id: uuid.v4(),
-          task: 'Learn React'
+          task: 'Learn React',
         },
         {
           id: uuid.v4(),
-          task: 'Do laundry'
+          task: 'Do laundry',
         }
       ]
     };
@@ -25,27 +26,55 @@ export default class NotesApp extends React.Component {
     const { notes } = this.state;
 
     return (
-      <div>
-        <button onClick={this.addNote}>+</button>
-        <Notes notes={notes} onDelete={this.deleteNote} />
+      <div className="notes-app">
+        <Button className="add-note" value="+" onClick={this.addNote} />
+        <Notes notes={notes} onNoteClick={this.activateNoteEdit} onEdit={this.editNote} onDelete={this.deleteNote} />
       </div>
     );
   }
 
- deleteNote = (id, e) => {
-   e.stopPropagation();
+  deleteNote = (id, e) => {
+    e.stopPropagation();
 
-   this.setState({
-     notes: this.state.notes.filter(note => note.id !== id)
-   });
- }
+    this.setState({
+      notes: this.state.notes.filter(note => note.id !== id)
+    });
+  }
 
   addNote = () => {
     this.setState({
       notes: [...this.state.notes, {
         id: uuid.v4(),
-        task: 'New Task'
+        task: 'New Task',
+        editing: true
       }]
+    });
+  }
+
+
+  activateNoteEdit = (id) => {
+    this.changeEditState(id, false);
+  }
+  editNote = (id, task) => {
+    this.changeEditState(id, true, task);
+  }
+
+
+
+  changeEditState = (id, editing, task) => {
+    this.setState({
+      notes: this.state.notes.map(note => {
+        if (note.id === id) {
+          if (editing) {
+            note.editing = false;
+            note.task = task;
+          } else {
+            note.editing = true;
+          }
+        }
+
+        return note;
+      })
     });
   }
 }
