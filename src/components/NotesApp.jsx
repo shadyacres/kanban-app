@@ -4,26 +4,13 @@ import uuid from 'uuid';
 import Notes from './Notes';
 import Button from './Button';
 
-export default class NotesApp extends React.Component {
-  constructor(props) {
-    super(props);
+import connect from '../libs/connect';
+import NoteActions from '../actions/NoteActions';
 
-    this.state = {
-      notes: [
-        {
-          id: uuid.v4(),
-          task: 'Learn React',
-        },
-        {
-          id: uuid.v4(),
-          task: 'Do laundry',
-        }
-      ]
-    };
-  }
+class NotesApp extends React.Component {
 
   render() {
-    const { notes } = this.state;
+    const { notes } = this.props;
 
     return (
       <div className="notes-app">
@@ -36,47 +23,28 @@ export default class NotesApp extends React.Component {
   deleteNote = (id, e) => {
     e.stopPropagation();
 
-    this.setState({
-      notes: this.state.notes.filter(note => note.id !== id)
-    });
+    this.props.NoteActions.delete(id);
   }
 
   addNote = () => {
-    this.setState({
-      notes: [...this.state.notes, {
-        id: uuid.v4(),
-        task: 'New Task',
-        editing: true
-      }]
+    this.props.NoteActions.create({
+      id: uuid.v4(),
+      task: 'new task'
     });
   }
-
 
   activateNoteEdit = (id) => {
-    this.changeEditState(id, false);
+    this.props.NoteActions.update({id, editing: true});
   }
+
   editNote = (id, task) => {
-    this.changeEditState(id, true, task);
-  }
-
-
-
-  changeEditState = (id, editing, task) => {
-    this.setState({
-      notes: this.state.notes.map(note => {
-        if (note.id === id) {
-          if (editing) {
-            note.editing = false;
-            note.task = task;
-          } else {
-            note.editing = true;
-          }
-        }
-
-        return note;
-      })
-    });
+    this.props.NoteActions.update({id, task, editing: false});
   }
 }
 
+export default connect(({ notes }) => ({
+  notes
+}), {
+    NoteActions
+})(NotesApp)
 
