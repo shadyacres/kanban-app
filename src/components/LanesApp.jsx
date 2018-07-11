@@ -2,9 +2,12 @@ import React from 'react';
 import uuid from 'uuid';
 import connect from '../libs/connect';
 
+import {compose} from 'redux';
+import {DragDropContext} from 'react-dnd'
+import HTML5Backend from 'react-dnd-html5-backend'
+
 import Lanes from './Lanes';
 import LaneActions from '../actions/LaneActions';
-import Button from './Button';
 
 const LanesApp = ({ LaneActions, lanes }) => {
   const addLane = () => {
@@ -16,14 +19,15 @@ const LanesApp = ({ LaneActions, lanes }) => {
 
   return (
     <div>
-      <Button className="add-lane" onClick={addLane} value="+" />
+      <button className="add-lane" onClick={addLane}>+++ Add Lane +++</button>
       <Lanes lanes={lanes} />
     </div>
   );
 };
 
-export default connect (({lanes}) => ({
-  lanes
-}), {
-  LaneActions
-})(LanesApp)
+export default compose(DragDropContext(HTML5Backend),
+  connect(
+    ({ lanes }) => ({ lanes }),
+    { LaneActions }
+  )
+)(LanesApp)

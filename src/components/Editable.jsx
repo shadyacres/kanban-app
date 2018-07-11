@@ -13,6 +13,11 @@ const Editable = ({ editing, value, onEdit, className, ...props }) => {
 
 
 class Edit extends React.Component {
+
+  handleFocus = e => {
+    e.target.select();
+  }
+
   render() {
     const { className, value, onEdit, ...props } = this.props;
 
@@ -23,6 +28,7 @@ class Edit extends React.Component {
       defaultValue={value}
       onBlur={this.finishEdit}
       onKeyPress={this.checkEnter}
+      onFocus={this.handleFocus}
       {...props} />;
   }
 
@@ -40,5 +46,7 @@ class Edit extends React.Component {
     }
   }
 }
+
+
 
 export default Editable;

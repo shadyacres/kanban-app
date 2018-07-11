@@ -1,4 +1,6 @@
 import LaneActions from '../actions/LaneActions'
+import NoteActions from '../actions/NoteActions'
+
 
 export default class LaneStore {
   constructor() {
@@ -8,23 +10,34 @@ export default class LaneStore {
   }
 
   create(lane) {
-    lane.notes = lane.notes || [];
+    
+    lane.editing = true;
+    lane.selected = true;
+
     this.setState({
       lanes: this.lanes.concat(lane)
     });
   }
 
-  attachToLame({ laneId, noteId }) {
+  update(updatedLane) {
     this.setState({
       lanes: this.lanes.map(lane => {
-        if (lane.notes.includes(noteId)) {
-          lane.notes = lane.notes.filter(note => note !== noteId)
+        if (lane.id === updatedLane.id) {
+          return Object.assign({}, lane, updatedLane);
         }
 
-        if (lane.id === laneId) {
-          lane.notes = lane.notes.concat(lane.notes.concact([noteId]));
-        }
+        return lane;
       })
+    });
+  }
+
+  delete(deletedLaneId) {
+
+    NoteActions.deleteByLaneId.defer(deletedLaneId);
+
+    this.setState({
+      lanes: this.lanes.filter(lane =>
+        lane.id !== deletedLaneId)
     });
   }
 }
