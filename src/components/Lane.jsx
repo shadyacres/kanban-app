@@ -1,15 +1,12 @@
 import React from 'react';
-
-import {compose} from 'redux';
-import {DropTarget} from 'react-dnd';
-import ItemTypes from '../constants/itemTypes';
-
+import uuid from 'uuid';
 import connect from '../libs/connect';
 import NoteActions from '../actions/NoteActions';
 import Notes from './Notes';
-import LaneHeader from './LaneHeader';
+import Button from './Button';
+import LaneActions from '../actions/LaneActions';
 
-const Lane = ({ connectDropTarget, lane, notes, NoteActions, ...props }) => {
+const Lane = ({ lane, notes, NoteActions, ...props }) => {
 
 
   const activateNoteEdit = id => {
@@ -19,17 +16,38 @@ const Lane = ({ connectDropTarget, lane, notes, NoteActions, ...props }) => {
     NoteActions.update({ id, task, editing: false });
   };
 
-  const deleteNote = (noteId, e) => {
+  const addNote = e => {
     e.stopPropagation();
 
+    const noteId = uuid.v4();
+
+    NoteActions.create({
+      id: noteId,
+      task: 'New Task'
+    }).then(noteId => {
+      LaneActions.attachToLane({
+        laneId: lane.id,
+        noteId
+
+      });
+    })
+  };
+
+  const deleteNote = (noteId, e) => {
+    e.stopPropagation();
     NoteActions.delete(noteId);
   };
 
-  return connectDropTarget(
+  return (
     <div {...props}>
-      <LaneHeader lane={lane}/>
+      <div className="lane-header">
+        <div className="lane-add-note">
+          <Button onClick={addNote} value="Add item" />
+        </div>
+        <div className="lane-name">{lane.name}</div>
+      </div>
       <Notes
-        notes={selectNotesByIds(notes, lane.id)}
+        notes={notes}
         onNoteClick={activateNoteEdit}
         onEdit={editNote}
         onDelete={deleteNote} />
@@ -37,28 +55,12 @@ const Lane = ({ connectDropTarget, lane, notes, NoteActions, ...props }) => {
   )
 };
 
-function selectNotesByIds(allNotes, laneId) {
-  return allNotes.filter(note => note.laneId === laneId);
-}
 
-const noteTarget = {
-  hover(targetProps, monitor) {
-    const sourceProps = monitor.getItem();
-    const sourceId = sourceProps.id;
 
-    NoteActions.moveToLane({noteId: sourceId, laneId: targetProps.lane.id});
+export default connect(
+  ({ notes }) => ({
+    notes
+  }), {
+    NoteActions
   }
-} 
-
-export default 
-compose(
-  DropTarget(ItemTypes.NOTE, noteTarget, connect => ({
-    connectDropTarget: connect.dropTarget()
-  })),
-  connect(
-      ({ notes }) => ({
-        notes
-      }), {
-        NoteActions
-      })
-    )(Lane)
+)(Lane)

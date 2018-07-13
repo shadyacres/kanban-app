@@ -8,11 +8,8 @@
     "alt-container": "^1.1.1",
     "alt-utils": "^2.0.0",
     "classnames": "^2.2.6",
-    "immutability-helper": "^2.7.1",
     "react": "^16.4.0",
     "react-addons-perf": "^15.4.2",
-    "react-dnd": "^5.0.0",
-    "react-dnd-html5-backend": "^5.0.1",
     "react-dom": "^16.4.0",
     "react-scripts": "1.1.4"
   },

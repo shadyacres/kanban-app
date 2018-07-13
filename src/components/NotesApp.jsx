@@ -7,7 +7,6 @@ import Button from './Button';
 import connect from '../libs/connect';
 import NoteActions from '../actions/NoteActions';
 
-
 class NotesApp extends React.Component {
 
   render() {
@@ -48,6 +47,4 @@ export default connect(({ notes }) => ({
 }), {
     NoteActions
 })(NotesApp)
-
-
 
