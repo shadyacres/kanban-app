@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import NotesApp from './components/NotesApp';
-import LanesApp from './components/LanesApp';
 
 class App extends Component {
   render() {
@@ -12,7 +11,7 @@ class App extends Component {
           <img src={logo} className="App-logo" alt="logo" />
           <h1 className="App-title">Kanban App</h1>
         </header>
-        <LanesApp />
+        <NotesApp />
       </div>
     );
   }
