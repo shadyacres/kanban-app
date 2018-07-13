@@ -45,7 +45,7 @@ export default class NotesApp extends React.Component {
     this.setState({
       notes: [...this.state.notes, {
         id: uuid.v4(),
-        task: 'New Task',
+        task: 'New Task1',
         editing: true
       }]
     });
